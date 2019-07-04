@@ -1,12 +1,17 @@
-﻿using System;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 
-namespace relay
+namespace Relay
 {
-    class Program
+    internal static class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Server>()
+                .UseUrls("http://0.0.0.0:5004")
+                .Build()
+                .Run();
         }
     }
 }
