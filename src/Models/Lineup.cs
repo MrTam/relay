@@ -29,5 +29,8 @@ namespace Relay.Models
         
         [JsonProperty("URL")]
         public string Url { get; set; }
+
+        [JsonProperty("HD")]
+        public int HD { get; set; } = 0;
     }
 }

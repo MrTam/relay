@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using Relay.Models;
 using Relay.Utils;
 
@@ -11,13 +12,17 @@ namespace Relay.Controllers
     [Produces("application/xml")]
     public class DeviceController
     {
+        private readonly RelayConfiguration _config;
+
+        public DeviceController(IOptionsSnapshot<RelayConfiguration> config) => _config = config.Value;
+
         [HttpGet]
         [SuppressMessage("ReSharper", "UnusedMember.Global")]
         public XmlResult<UpnpDevice> Get()
         {
             return new UpnpDevice
             {
-                UrlBase = "http://192.168.1.35:5004",
+                UrlBase = _config.Url,
                 Device =
                 {
                     DeviceId = "123",

@@ -11,19 +11,30 @@ namespace Relay
 {
     public sealed class Server
     {
+        private readonly IConfiguration _config;
         private readonly ILogger<Server> _log;
         
         public Server(IConfiguration config, ILogger<Server> log)
         {
+            _config = config;
             _log = log;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc()
-                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.Configure<RelayConfiguration>(_config);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
-            services.AddSingleton<ILineupProvider, TvheadendLineupProvider>();
+            var cfg = new RelayConfiguration();
+            _config.Bind(cfg);
+
+            switch(cfg.Provider)
+            {
+                case LineupProvider.Tvheadend:
+                    services.Configure<TvheadendLineupProviderConfig>(_config.GetSection("tvheadend"));
+                    services.AddSingleton<ILineupProvider, TvheadendLineupProvider>();
+                    break;
+            }
         }
         
         // ReSharper disable once UnusedMember.Global

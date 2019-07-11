@@ -1,5 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Relay.Models;
 
 namespace Relay.Controllers
@@ -9,6 +11,10 @@ namespace Relay.Controllers
     [Produces("application/json")]
     public class DiscoverController
     {
+        private readonly RelayConfiguration _config;
+
+        public DiscoverController(IOptionsSnapshot<RelayConfiguration> config) => _config = config.Value;
+
         [HttpGet]
         [SuppressMessage("ReSharper", "UnusedMember.Global")]
         public ActionResult<Discover> GetDiscoverData()
@@ -16,9 +22,9 @@ namespace Relay.Controllers
             return new Discover
             {
                 FriendlyName = "test",
-                BaseUrl = "http://192.168.1.35:5004",
+                BaseUrl = _config.Url,
                 DeviceId = "Foobarwibble",
-                TunerCount = 4,
+                TunerCount = _config.TunerCount,
                 ModelNumber = "1337"
                 
             };
