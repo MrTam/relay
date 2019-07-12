@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Relay.Providers;
 using Relay.Utils;
@@ -24,7 +25,7 @@ namespace Relay.Models
     public class LineupEntry
     {
         [JsonIgnore]
-        public int LineupEntryId { get; set ;}
+        public int LineupEntryId { get; set; }
 
         [JsonIgnore]
         public LineupProvider Provider { get; set; }
@@ -47,9 +48,20 @@ namespace Relay.Models
 
     public class LineupContext : DbContext
     {
-        public LineupContext(DbContextOptions<LineupContext> options)
+        private readonly RelayConfiguration _config;
+        
+        public LineupContext(
+            IOptionsSnapshot<RelayConfiguration> config,
+            DbContextOptions<LineupContext> options)
             : base(options)
         {
+            _config = config.Value;
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<LineupEntry>().HasQueryFilter(
+                e => e.Provider == _config.Provider);
         }
 
         public DbSet<LineupEntry> Entries { get; set; }

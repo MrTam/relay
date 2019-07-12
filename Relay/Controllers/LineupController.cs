@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Relay.Models;
-using Relay.Providers;
 
 namespace Relay.Controllers
 {
@@ -35,8 +35,24 @@ namespace Relay.Controllers
 
         [HttpPost]
         [Route("/lineup.post")]
-        public void PostLineup()
+        public async Task<ActionResult<LineupEntry>> PostLineup(
+            [FromQuery(Name = "favorite")] string favourite)
         {
+            if (string.IsNullOrEmpty(favourite) ||
+                !(favourite[0] == '+' || favourite[0] == '-') ||
+                !int.TryParse(favourite.Substring(1), out var channel))
+            {
+                return new BadRequestResult();
+            }
+            
+            using (var ctx = _lineupContext)
+            {
+                var entry = await ctx.Entries.FirstAsync(e => e.Number == channel);
+                entry.Favorite = favourite[0] == '+' ? 1 : 0;
+                
+                await ctx.SaveChangesAsync();
+                return entry;
+            }
         }
     }
 }

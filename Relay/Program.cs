@@ -8,6 +8,7 @@ namespace Relay
     {
         public static void Main(string[] args) => BuildWebHost(args).Run();
 
+        // ReSharper disable once MemberCanBePrivate.Global
         public static IWebHost BuildWebHost(string[] args)
         {
             var config = new ConfigurationBuilder()
@@ -24,7 +25,8 @@ namespace Relay
                     logging
                         .ClearProviders()
                         .SetMinimumLevel(LogLevel.Information)
-                        .AddConsole(); 
+                        .AddConsole()
+                        .AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
                 })
                 .Build();
         }

@@ -4,7 +4,7 @@ using Relay.Models;
 
 namespace Relay.Providers
 {
-    public enum LineupProvider : int
+    public enum LineupProvider
     {
         Tvheadend
     }

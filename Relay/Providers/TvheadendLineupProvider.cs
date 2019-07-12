@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -10,43 +11,46 @@ using Relay.Models;
 
 namespace Relay.Providers
 {
-    public class TvheadendLineupProviderConfig
-    {
-        public string Url { get; set; }
-    }
-
-    internal class TvheadendLineupEntry
-    {
-        public string Uuid { get; set; }
-        public uint Number { get; set; }
-        public string Name { get; set; }
-    }
-
-    internal class TvheadendLineupEntries
-    {
-        public IList<TvheadendLineupEntry> Entries { get; set; }
-    }
-    
+    [SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
+    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
     public class TvheadendLineupProvider : ILineupProvider
     {
+        #region Private Classes
+        
+        private class TvheadendLineupProviderConfig
+        {
+            public string Url { get; set; }
+        }
+
+        private class TvheadendLineupEntry
+        {
+            public string Uuid { get; set; }
+            public uint Number { get; set; }
+            public string Name { get; set; }
+        }
+
+        private class TvheadendLineupEntries
+        {
+            public IList<TvheadendLineupEntry> Entries { get; set; }
+        }
+        
+        #endregion
+ 
         private readonly ILogger _log;
-        private readonly LineupContext _lineupContext;
         private static readonly HttpClient Client = new HttpClient();
 
         public TvheadendLineupProvider(
             ILogger<TvheadendLineupProvider> log,
-            IConfiguration config,
-            LineupContext lineupContext)
+            IConfiguration config)
         {
             _log = log;
-            _lineupContext = lineupContext;
 
             var cfg = new TvheadendLineupProviderConfig();
             config.Bind("tvheadend", cfg);
 
             Client.BaseAddress = new Uri($"{cfg.Url}/api/");
             
-            _log.LogInformation("Created TVHeadend provider (url: {0})", Client.BaseAddress.AbsoluteUri);
+            _log.LogInformation("Created Tvheadend provider (url: {0})", Client.BaseAddress.AbsoluteUri);
         }
 
         public LineupProvider ProviderType => LineupProvider.Tvheadend;
@@ -69,6 +73,7 @@ namespace Relay.Providers
                     Url = $"{Client.BaseAddress.AbsoluteUri}stream/channel/{e.Uuid}",
                     HD = e.Name.EndsWith("HD") ? 1 : 0
                 })
+                .OrderBy(e => e.Number)
                 .ToList();
         }
     }

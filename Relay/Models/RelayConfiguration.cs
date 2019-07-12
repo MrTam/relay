@@ -1,8 +1,9 @@
-using Microsoft.Extensions.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using Relay.Providers;
 
-namespace Relay
+namespace Relay.Models
 {
+    [SuppressMessage("ReSharper", "AutoPropertyCanBeMadeGetOnly.Global")]
     public sealed class RelayConfiguration
     {
         public string Url { get; set; } = "http://127.0.0.1:5004";
