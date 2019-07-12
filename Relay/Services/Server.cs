@@ -9,12 +9,16 @@ using Relay.Providers;
 using Relay.Utils;
 
 [assembly: ApiController]
-namespace Relay
+namespace Relay.Services
 {
     public sealed class Server
     {
         private readonly IConfiguration _config;
+        
+        // Services
+        
         private LineupUpdater _lineupUpdater;
+        private UdpDiscovery _udpDiscovery;
         
         public Server(IConfiguration config)
         {
@@ -23,10 +27,14 @@ namespace Relay
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<RelayConfiguration>(_config);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            services.AddDbContext<LineupContext>(options => options.UseSqlite(Constants.DbDataSource));
-
+            
+            services
+                .Configure<RelayConfiguration>(_config)
+                .AddDbContext<LineupContext>(options => options.UseSqlite(Constants.DbDataSource))
+                .AddSingleton<LineupUpdater>()
+                .AddSingleton<UdpDiscovery>();
+            
             var cfg = new RelayConfiguration();
             _config.Bind(cfg);
 
@@ -36,8 +44,6 @@ namespace Relay
                     services.AddSingleton<ILineupProvider, TvheadendLineupProvider>();
                     break;
             }
-
-            services.AddSingleton<LineupUpdater>();
         }
         
         // ReSharper disable once UnusedMember.Global
@@ -47,6 +53,9 @@ namespace Relay
 
             _lineupUpdater = app.ApplicationServices.GetService<LineupUpdater>();
             _lineupUpdater.Start();
+
+            _udpDiscovery = app.ApplicationServices.GetService<UdpDiscovery>();
+            _udpDiscovery.Start();
         }
     }
 }

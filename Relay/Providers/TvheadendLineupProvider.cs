@@ -13,7 +13,7 @@ namespace Relay.Providers
 {
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Local")]
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-    public class TvheadendLineupProvider : ILineupProvider
+    public sealed class TvheadendLineupProvider : ILineupProvider
     {
         #region Private Classes
         

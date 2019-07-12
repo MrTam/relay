@@ -8,7 +8,7 @@ using Relay.Models;
 namespace Relay.Migrations
 {
     [DbContext(typeof(LineupContext))]
-    [Migration("20190712121955_Initial")]
+    [Migration("20190712154716_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

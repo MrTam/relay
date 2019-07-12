@@ -5,8 +5,9 @@ using System.Timers;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Relay.Models;
+using Relay.Providers;
 
-namespace Relay.Providers
+namespace Relay.Services
 {
     public sealed class LineupUpdater
     {
