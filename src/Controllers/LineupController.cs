@@ -12,11 +12,11 @@ namespace Relay.Controllers
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class LineupController
     {
-        private readonly ILineupProvider _lineupProvider;
+        private readonly LineupContext _lineupContext;
         
-        public LineupController(ILineupProvider provider)
+        public LineupController(LineupContext context)
         {
-            _lineupProvider = provider;
+            _lineupContext = context;
         }
         
         [HttpGet]
@@ -28,10 +28,9 @@ namespace Relay.Controllers
  
         [HttpGet]
         [Route("/lineup.json")]
-        public async Task<ActionResult<IEnumerable<LineupEntry>>> GetLineup()
+        public ActionResult<IEnumerable<LineupEntry>> GetLineup()
         {
-            var entries = await _lineupProvider.Entries;
-            return new ActionResult<IEnumerable<LineupEntry>>(entries);
+            return _lineupContext.Entries;
         }
 
         [HttpPost]

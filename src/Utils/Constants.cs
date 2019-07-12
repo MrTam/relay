@@ -6,5 +6,7 @@ namespace Relay.Utils
         public const string UpnpDeviceType = "urn:schemas-upnp-org:device:MediaServer:1";
 
         public const string LineupSource = "Cable";
+
+        public const string DbDataSource = "Data Source=relay.db";
     }
 }

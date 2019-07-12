@@ -9,6 +9,8 @@ namespace Relay
 
         public uint TunerCount { get; set; } = 2;
 
+        public uint UpdateIntervalSeconds { get; set; } = 3600;
+
         public LineupProvider Provider { get; set; } = LineupProvider.Tvheadend; 
     }
 }

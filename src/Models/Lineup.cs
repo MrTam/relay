@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Relay.Providers;
 using Relay.Utils;
 
 namespace Relay.Models
@@ -21,6 +23,12 @@ namespace Relay.Models
 
     public class LineupEntry
     {
+        [JsonIgnore]
+        public int LineupEntryId { get; set ;}
+
+        [JsonIgnore]
+        public LineupProvider Provider { get; set; }
+
         [JsonProperty("GuideNumber")]
         public uint Number { get; set; }
         
@@ -32,5 +40,18 @@ namespace Relay.Models
 
         [JsonProperty("HD")]
         public int HD { get; set; } = 0;
+
+        [JsonProperty("Favorite")]
+        public int Favorite {get; set; } = 0;
+    }
+
+    public class LineupContext : DbContext
+    {
+        public LineupContext(DbContextOptions<LineupContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<LineupEntry> Entries { get; set; }
     }
 }

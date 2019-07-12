@@ -4,8 +4,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using Relay.Models;
 
 namespace Relay.Providers
@@ -30,33 +30,37 @@ namespace Relay.Providers
     public class TvheadendLineupProvider : ILineupProvider
     {
         private readonly ILogger _log;
+        private readonly LineupContext _lineupContext;
         private static readonly HttpClient Client = new HttpClient();
 
         public TvheadendLineupProvider(
             ILogger<TvheadendLineupProvider> log,
-            IOptionsSnapshot<TvheadendLineupProviderConfig> config)
+            IConfiguration config,
+            LineupContext lineupContext)
         {
             _log = log;
-            var cfg = config.Value;
-            Client.BaseAddress = new Uri($"{cfg.Url}/api/");
+            _lineupContext = lineupContext;
 
+            var cfg = new TvheadendLineupProviderConfig();
+            config.Bind("tvheadend", cfg);
+
+            Client.BaseAddress = new Uri($"{cfg.Url}/api/");
+            
             _log.LogInformation("Created TVHeadend provider (url: {0})", Client.BaseAddress.AbsoluteUri);
         }
-        
-        public Task<IList<LineupEntry>> Entries => FetchChannelInfo();
 
-        private async Task<IList<LineupEntry>> FetchChannelInfo()
+        public LineupProvider ProviderType => LineupProvider.Tvheadend;
+
+        public async Task<IList<LineupEntry>> UpdateLineup()
         {
-            var res = await Client.GetAsync(
-                "channel/grid?start=0&limit=999999");
+            var res = await Client.GetAsync("channel/grid?start=0&limit=999999");
+            if (!res.IsSuccessStatusCode) return new List<LineupEntry>();
 
-            if (!res.IsSuccessStatusCode) return null;
-            
             res.Content.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
             var entries = await res.Content.ReadAsAsync<TvheadendLineupEntries>();
 
             _log.LogInformation("Retrieved {0} channel lineup entries", entries.Entries.Count);
-                
+           
             return entries.Entries
                 .Select(e => new LineupEntry
                 {

@@ -4,13 +4,15 @@ using Relay.Models;
 
 namespace Relay.Providers
 {
-    public enum LineupProvider
+    public enum LineupProvider : int
     {
         Tvheadend
     }
 
     public interface ILineupProvider
     {
-        Task<IList<LineupEntry>> Entries { get; }
+        LineupProvider ProviderType { get; }
+
+        Task<IList<LineupEntry>> UpdateLineup();
     }
 }

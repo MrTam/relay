@@ -1,10 +1,13 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Relay.Models;
 using Relay.Providers;
+using Relay.Utils;
 
 [assembly: ApiController]
 namespace Relay
@@ -12,7 +15,8 @@ namespace Relay
     public sealed class Server
     {
         private readonly IConfiguration _config;
-        private readonly ILogger<Server> _log;
+        private readonly ILogger _log;
+        private LineupUpdater _lineupUpdater;
         
         public Server(IConfiguration config, ILogger<Server> log)
         {
@@ -24,6 +28,7 @@ namespace Relay
         {
             services.Configure<RelayConfiguration>(_config);
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddDbContext<LineupContext>(options => options.UseSqlite(Constants.DbDataSource));
 
             var cfg = new RelayConfiguration();
             _config.Bind(cfg);
@@ -31,16 +36,20 @@ namespace Relay
             switch(cfg.Provider)
             {
                 case LineupProvider.Tvheadend:
-                    services.Configure<TvheadendLineupProviderConfig>(_config.GetSection("tvheadend"));
                     services.AddSingleton<ILineupProvider, TvheadendLineupProvider>();
                     break;
             }
+
+            services.AddSingleton<LineupUpdater>();
         }
         
         // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseMvc();
+
+            _lineupUpdater = app.ApplicationServices.GetService<LineupUpdater>();
+            _lineupUpdater.Start();
         }
     }
 }
