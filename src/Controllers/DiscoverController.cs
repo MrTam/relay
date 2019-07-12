@@ -1,6 +1,5 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Relay.Models;
 

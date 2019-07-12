@@ -9,7 +9,7 @@ namespace Relay.Utils
         
         public static implicit operator XmlResult<T>(T data)
         {
-            return new XmlResult<T>()
+            return new XmlResult<T>
             {
                 Data = data
             };

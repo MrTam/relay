@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Relay.Models;
 using Relay.Providers;
 using Relay.Utils;
@@ -15,13 +14,11 @@ namespace Relay
     public sealed class Server
     {
         private readonly IConfiguration _config;
-        private readonly ILogger _log;
         private LineupUpdater _lineupUpdater;
         
-        public Server(IConfiguration config, ILogger<Server> log)
+        public Server(IConfiguration config)
         {
             _config = config;
-            _log = log;
         }
 
         public void ConfigureServices(IServiceCollection services)
