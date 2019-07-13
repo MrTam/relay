@@ -94,7 +94,7 @@ namespace Relay.Providers
                 {
                     Name = e.Name,
                     Number = e.Number,
-                    Url = $"{Client.BaseAddress.Scheme}://{_config.Username}@{_config.Password}@{Client.BaseAddress.Host}:{Client.BaseAddress.Port}/stream/channel/{e.Uuid}",
+                    Url = $"{Client.BaseAddress.Scheme}://{_config.Username}:{_config.Password}@{Client.BaseAddress.Host}:{Client.BaseAddress.Port}/stream/channel/{e.Uuid}",
                     HD = e.Name.EndsWith("HD") ? 1 : 0
                 })
                 .OrderBy(e => e.Number)
