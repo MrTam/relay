@@ -11,6 +11,8 @@ jobs:
     steps:
       - checkout
 
+      - setup_remote_docker
+
       - run:
           name: Build Docker Image
           command: docker build -t ${DOCKER_REPO}/replay:latest .
