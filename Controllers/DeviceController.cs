@@ -7,7 +7,6 @@ using Relay.Utils;
 namespace Relay.Controllers
 {
     [ApiController]
-    [Route("/")]
     [Route("/device.xml")]
     [Produces("application/xml")]
     public class DeviceController

@@ -33,7 +33,7 @@ namespace Relay.Services
             var cfg = new RelayConfiguration();
             _config.Bind(cfg);
 
-            var dbConnectionString = $"Data Source = {cfg.DatabasePath}/relay.db";
+            var dbConnectionString = $"Data Source = Config/relay.db";
             
             services
                 .Configure<RelayConfiguration>(_config)

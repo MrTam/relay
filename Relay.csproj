@@ -10,4 +10,8 @@
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="2.2.6" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <None Include="Config\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Config\" />
+  </ItemGroup>
 </Project>
