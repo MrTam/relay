@@ -20,9 +20,9 @@ namespace Relay.Controllers
         {
             return new Discover
             {
-                FriendlyName = "test",
+                FriendlyName = "HDHomerun (Relay)",
                 BaseUrl = _config.Url,
-                DeviceId = "Foobarwibble",
+                DeviceId = _config.TunerDeviceId.ToString(),
                 TunerCount = _config.TunerCount,
                 ModelNumber = "1337"
                 

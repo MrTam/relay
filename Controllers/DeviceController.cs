@@ -24,10 +24,10 @@ namespace Relay.Controllers
                 UrlBase = _config.Url,
                 Device =
                 {
-                    DeviceId = "123",
-                    Identifier = "MrTam Amazing Tuner",
-                    Manufacturer = "MrTam",
-                    ModelName = "Amazing Tuner",
+                    DeviceId = _config.TunerDeviceId.ToString(),
+                    Identifier = "HDHomerun (Relay)",
+                    Manufacturer = "Relay",
+                    ModelName = "HDHomerun (Relay)",
                     ModelNumber = "1337" 
                 }
             };

@@ -2,13 +2,12 @@ using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Relay.Models;
-using SQLitePCL;
 
 namespace Relay.Controllers
 {
     [ApiController]
     [Produces("application/json")]
-    public class StreamController
+    public class StreamController : Controller
     {
         private readonly LineupContext _lineupContext;
 
@@ -30,7 +29,7 @@ namespace Relay.Controllers
                     return new RedirectResult(entry.Url, true);
                 }
             }
-            catch (InvalidOperationException e)
+            catch (InvalidOperationException)
             {
                 return new NotFoundResult();
             }

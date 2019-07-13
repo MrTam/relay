@@ -11,7 +11,7 @@ namespace Relay.Controllers
     [ApiController]
     [Produces("application/json")]
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
-    public class LineupController
+    public class LineupController : Controller
     {
         private readonly LineupContext _lineupContext;
         
