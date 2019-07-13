@@ -13,14 +13,15 @@ namespace Relay
         // ReSharper disable once MemberCanBePrivate.Global
         public static IWebHost BuildWebHost()
         {
+            if (!Directory.Exists("Config"))
+                Directory.CreateDirectory("Config");
+            
             if (!File.Exists("Config/Relay.json"))
-            {
                 File.Copy("Relay.json", "Config/Relay.json", false);
-            }
             
             var config = new ConfigurationBuilder()
-                .AddEnvironmentVariables("relay_")
                 .AddJsonFile("Config/Relay.json", true)
+                .AddEnvironmentVariables("relay_")
                 .Build();
 
             return new WebHostBuilder()

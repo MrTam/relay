@@ -40,8 +40,10 @@ namespace Relay.Controllers
         public async Task<ActionResult<LineupEntry>> PostLineup(
             [FromQuery(Name = "favorite")] string favourite)
         {
+            // Check for space and plus here - as encoding breaks the plus character
+            
             if (string.IsNullOrEmpty(favourite) ||
-                !(favourite[0] == '+' || favourite[0] == '-') ||
+                !(favourite[0] == ' ' || favourite[0] == '+' || favourite[0] == '-') ||
                 !int.TryParse(favourite.Substring(1), out var channel))
             {
                 return new BadRequestResult();
@@ -50,7 +52,7 @@ namespace Relay.Controllers
             using (var ctx = _lineupContext)
             {
                 var entry = await ctx.Entries.FirstAsync(e => e.Number == channel);
-                entry.Favorite = favourite[0] == '+' ? 1 : 0;
+                entry.Favorite = favourite[0] == '-' ? 0 : 1;
                 
                 await ctx.SaveChangesAsync();
                 return entry;

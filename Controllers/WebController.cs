@@ -5,9 +5,6 @@ namespace Relay.Controllers
     [Route("/")]
     public class WebController : Controller
     {
-        public ViewResult Index()
-        {
-            return View();
-        }
+        public ViewResult Index() => View();
     }
 }
