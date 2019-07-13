@@ -1,10 +1,24 @@
 version: 2
 jobs:
   build:
+    context: Cloudsmith
+
+    working_directory: /app
+
     docker:
-      - image: mcr.microsoft.com/dotnet/core/sdk:2.2-alpine
+      - image: docker:latest
 
     steps:
       - checkout
-      - run: dotnet restore
-      - run: dotnet build
+
+      - run:
+          name: Build Docker Image
+          command: docker build -t ${DOCKER_REPO}/replay:latest .
+
+      - run:
+          name: Authenticate With Cloudsmith 
+          command: echo ${CLOUDSMITH_API_KEY} | docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} --password-stdin
+
+      - run:
+          name: Push Docker Image
+          command: docker push ${DOCKER_REPO}/replay:latest .
