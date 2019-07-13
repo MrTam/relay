@@ -65,8 +65,12 @@ namespace Relay.Services
                 var other = lineupEntries.First(o => o.Number == e.Number);
                 if (e.Name.Equals(other.Name) && e.Url.Equals(other.Url) && e.HD.Equals(other.HD)) continue;
                 
+                e.Name = other.Name;
+                e.Url = other.Url;
+                e.HD = other.HD;
+                
                 _log.LogInformation("Updated channel {0}: {1} => {2}", e.Name, e.Number, e.Url);
-                _lineupContext.Update(e);
+                
                 ++updated;
             }
             

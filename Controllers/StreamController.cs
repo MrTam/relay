@@ -26,7 +26,7 @@ namespace Relay.Controllers
                 using (var ctx = _lineupContext)
                 {
                     var entry = ctx.Entries.First(e => e.Number == channel);
-                    return new RedirectResult(entry.Url);
+                    return new RedirectResult(entry.Url, true);
                 }
             }
             catch (InvalidOperationException e)

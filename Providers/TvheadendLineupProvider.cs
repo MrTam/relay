@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -20,6 +21,10 @@ namespace Relay.Providers
         private class TvheadendLineupProviderConfig
         {
             public string Url { get; set; }
+
+            public string Username { get; set; } = "plex";
+
+            public string Password { get; set; } = "plex";
         }
 
         private class TvheadendLineupEntry
@@ -37,18 +42,37 @@ namespace Relay.Providers
         #endregion
  
         private readonly ILogger _log;
-        private static readonly HttpClient Client = new HttpClient();
+        private readonly TvheadendLineupProviderConfig _config;
+        
+        private static readonly HttpClientHandler ClientHandler = new HttpClientHandler();
+        private static readonly HttpClient Client = new HttpClient(ClientHandler);
+
+        private static bool ClientInitialised;
 
         public TvheadendLineupProvider(
             ILogger<TvheadendLineupProvider> log,
             IConfiguration config)
         {
             _log = log;
+                
+            _config = new TvheadendLineupProviderConfig();
+            config.Bind("tvheadend", _config);
 
-            var cfg = new TvheadendLineupProviderConfig();
-            config.Bind("tvheadend", cfg);
+            if (!ClientInitialised)
+            {
+                Client.BaseAddress = new Uri($"{_config.Url}/api/");
 
-            Client.BaseAddress = new Uri($"{cfg.Url}/api/");
+                if (!string.IsNullOrEmpty(_config.Username) || !string.IsNullOrEmpty(_config.Password))
+                {
+                    ClientHandler.Credentials = new NetworkCredential()
+                    {
+                        UserName = _config.Username,
+                        Password = _config.Password
+                    };
+                }
+
+                ClientInitialised = true;
+            }
             
             _log.LogInformation("Created Tvheadend provider (url: {0})", Client.BaseAddress.AbsoluteUri);
         }
@@ -70,7 +94,7 @@ namespace Relay.Providers
                 {
                     Name = e.Name,
                     Number = e.Number,
-                    Url = $"{Client.BaseAddress.AbsoluteUri}stream/channel/{e.Uuid}",
+                    Url = $"{Client.BaseAddress.Scheme}://{_config.Username}@{_config.Password}@{Client.BaseAddress.Host}:{Client.BaseAddress.Port}/stream/channel/{e.Uuid}",
                     HD = e.Name.EndsWith("HD") ? 1 : 0
                 })
                 .OrderBy(e => e.Number)
