@@ -12,6 +12,8 @@ WORKDIR /app
 
 EXPOSE 80/tcp 5004/tcp 65001/udp
 
-COPY --from=build /app/relay/out ./
-RUN ln -sf /app/Config /config
+COPY --from=build /app/relay/out/ ./
+RUN mkdir Config; ln -sf /app/Config /config
+
+VOLUME /config
 ENTRYPOINT ["dotnet", "Relay.dll"]
