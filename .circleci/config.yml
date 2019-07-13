@@ -1,8 +1,6 @@
 version: 2
 jobs:
   build:
-    context: Cloudsmith
-
     working_directory: /app
 
     docker:
@@ -14,13 +12,21 @@ jobs:
       - setup_remote_docker
 
       - run:
-          name: Build Docker Image
-          command: docker build -t ${DOCKER_REPO}/replay:latest .
+        name: Build Docker Image
+        command: docker build -t ${DOCKER_REPO}/relay:latest .
 
       - run:
-          name: Authenticate With Cloudsmith 
-          command: winpty docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
+        name: Authenticate With Cloudsmith 
+        command: |
+            docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
 
       - run:
-          name: Push Docker Image
-          command: docker push ${DOCKER_REPO}/replay:latest .
+        name: Push Docker Image
+        command: docker push ${DOCKER_REPO}/relay:latest .
+
+workflows:
+  version: 2
+    workflow:
+      jobs:
+        - build:
+          context: Cloudsmith
