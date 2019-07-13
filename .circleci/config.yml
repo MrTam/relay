@@ -12,14 +12,14 @@ jobs:
       - setup_remote_docker
 
       - run:
-        name: Build Docker Image
-        command: docker build -t ${DOCKER_REPO}/relay:latest .
+          name: Build Docker Image
+          command: docker build -t ${DOCKER_REPO}/relay:latest .
 
       - run:
-        name: Authenticate With Cloudsmith 
-        command: |
-            docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
+          name: Authenticate With Cloudsmith 
+          command: |
+              docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
 
       - run:
-        name: Push Docker Image
-        command: docker push ${DOCKER_REPO}/relay:latest .
+          name: Push Docker Image
+          command: docker push ${DOCKER_REPO}/relay:latest .
