@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.IO;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Relay.Services;
@@ -12,9 +13,14 @@ namespace Relay
         // ReSharper disable once MemberCanBePrivate.Global
         public static IWebHost BuildWebHost()
         {
+            if (!File.Exists("Config/Relay.json"))
+            {
+                File.Copy("Relay.json", "Config/Relay.json", false);
+            }
+            
             var config = new ConfigurationBuilder()
                 .AddEnvironmentVariables("relay_")
-                .AddJsonFile("Config/Relay.json")
+                .AddJsonFile("Config/Relay.json", true)
                 .Build();
 
             return new WebHostBuilder()

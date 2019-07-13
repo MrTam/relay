@@ -12,6 +12,6 @@
   </ItemGroup>
   
   <ItemGroup>
-    <None Include="Config\**" CopyToOutputDirectory="PreserveNewest" LinkBase="Config\" />
+    <None Include="Config\**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>
