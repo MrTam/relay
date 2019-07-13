@@ -20,14 +20,16 @@ namespace Relay
                 .UseConfiguration(config)
                 .UseKestrel()
                 .UseStartup<Server>()
-                .UseUrls("http://0.0.0.0:5004")
+                .UseUrls("http://0.0.0.0:80", "http://0.0.0.0:5004")
                 .ConfigureLogging((_, logging) =>
                 {
                     logging
                         .ClearProviders()
                         .SetMinimumLevel(LogLevel.Information)
                         .AddConsole()
-                        .AddFilter("Microsoft.EntityFrameworkCore.Database.Command", LogLevel.Warning);
+                        .AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning)
+                        .AddFilter("Microsoft.AspNetCore", LogLevel.Warning)
+                        .AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
                 })
                 .Build();
         }

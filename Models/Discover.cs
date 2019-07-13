@@ -1,5 +1,4 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 
 namespace Relay.Models
 {
@@ -13,7 +12,7 @@ namespace Relay.Models
 
         public string FirmwareName { get; } = "hdhomerun_atsc";
         
-        public uint TunerCount { get; set; }
+        public int TunerCount { get; set; }
 
         public string FirmwareVersion { get; } = "1337";
 

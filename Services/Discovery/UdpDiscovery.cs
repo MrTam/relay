@@ -1,4 +1,3 @@
-using System;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -7,7 +6,7 @@ using Microsoft.Extensions.Options;
 using Relay.Models;
 using Relay.Utils;
 
-namespace Relay.Services
+namespace Relay.Services.Discovery
 {
     public class UdpDiscovery
     {
@@ -48,7 +47,6 @@ namespace Relay.Services
                 {
                    var data = await _client.ReceiveAsync();
                    await HandleDatagram(data.RemoteEndPoint, data.Buffer);
-                   
                 }
                 catch (SocketException e)
                 {
@@ -60,7 +58,42 @@ namespace Relay.Services
 
         private async Task HandleDatagram(IPEndPoint source, byte[] data)
         {
-            _log.LogInformation("Received {0} bytes from: {1}", source, data.Length);
+            try
+            {
+                var packet = Packet.FromBytes(data);
+                
+                _log.LogInformation("Received {0} from {1} ({2} bytes)",
+                    packet.Type,
+                    source,
+                    data.Length);
+
+                switch (packet.Type)
+                {
+                    case PacketType.DiscoverRequest:
+                        var reply = PacketFactory.CreateDiscoverReply(
+                            _config.TunerDeviceId,
+                            _config.TunerCount,
+                            _config.Url);
+                        
+                        var payload = reply.ToByteArray();
+
+                        _log.LogInformation("Sending {0} to {1} ({2} bytes) ...",
+                            reply.Type,
+                            source,
+                            payload.Length);
+
+                        await _client.SendAsync(payload, payload.Length, source);
+                        break;
+                    
+                    default:
+                        _log.LogDebug("Ignoring unhandled packet type: {0}", packet.Type);
+                        break;
+                }
+            }
+            catch (PacketException e)
+            {
+                _log.LogError(e.Message);
+            }
         }
     }
 }

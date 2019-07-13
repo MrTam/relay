@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,7 +31,8 @@ namespace Relay.Controllers
         [Route("/lineup.json")]
         public ActionResult<IEnumerable<LineupEntry>> GetLineup()
         {
-            return _lineupContext.Entries;
+            return new ActionResult<IEnumerable<LineupEntry>>(
+                _lineupContext.Entries.OrderBy(e => e.Number));
         }
 
         [HttpPost]

@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Relay.Models;
 using Relay.Providers;
+using Relay.Services.Discovery;
 using Relay.Utils;
 
 [assembly: ApiController]

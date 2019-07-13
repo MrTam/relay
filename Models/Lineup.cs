@@ -1,7 +1,9 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Relay.Providers;
 using Relay.Utils;
 
@@ -29,9 +31,12 @@ namespace Relay.Models
 
         [JsonIgnore]
         public LineupProvider Provider { get; set; }
-
-        [JsonProperty("GuideNumber")]
+        
+        [JsonIgnore]
         public uint Number { get; set; }
+
+        [NotMapped]
+        public string GuideNumber => Number.ToString();
         
         [JsonProperty("GuideName")]
         public string Name { get; set; }
