@@ -19,7 +19,7 @@ jobs:
 
       - run:
           name: Authenticate With Cloudsmith 
-          command: echo ${CLOUDSMITH_API_KEY} | docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} --password-stdin
+          command: winpty docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
 
       - run:
           name: Push Docker Image
