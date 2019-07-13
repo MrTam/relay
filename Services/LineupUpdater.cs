@@ -44,7 +44,9 @@ namespace Relay.Services
             
             var lineupEntries = await _provider.UpdateLineup();
             var lineupChannels = lineupEntries.Select(e => e.Number).ToList();
-            
+
+            int added = 0, updated = 0, removed = 0;
+
             // Remove missing
             
             foreach(var e in _lineupContext.Entries
@@ -52,6 +54,7 @@ namespace Relay.Services
             {
                 _log.LogInformation("Removed channel {0}: {1}", e.Number, e.Name);
                 _lineupContext.Remove(e);
+                ++removed;
             }
             
             // Update existing
@@ -64,6 +67,7 @@ namespace Relay.Services
                 
                 _log.LogInformation("Updated channel {0}: {1} => {2}", e.Name, e.Number, e.Url);
                 _lineupContext.Update(e);
+                ++updated;
             }
             
             // Add new
@@ -74,9 +78,13 @@ namespace Relay.Services
             {
                 _log.LogInformation("Added channel {0}: {1} => {2}", e.Number, e.Name, e.Url);
                 _lineupContext.Add(e);
+                ++added;
             }
-            
+
             await _lineupContext.SaveChangesAsync();
+            
+            _log.LogInformation("Lineup update complete: {0} added, {1} updated, {2} removed",
+                added, updated, removed);
             
             if(!_running)
             {

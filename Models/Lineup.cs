@@ -36,6 +36,7 @@ namespace Relay.Models
         public uint Number { get; set; }
 
         [NotMapped]
+        [JsonProperty("GuideNumber")]
         public string GuideNumber => Number.ToString();
         
         [JsonProperty("GuideName")]

@@ -30,14 +30,17 @@ namespace Relay.Services
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             
+            var cfg = new RelayConfiguration();
+            _config.Bind(cfg);
+
+            var dbConnectionString = $"Data Source = {cfg.DatabasePath}/relay.db";
+            
             services
                 .Configure<RelayConfiguration>(_config)
-                .AddDbContext<LineupContext>(options => options.UseSqlite(Constants.DbDataSource))
+                .AddDbContext<LineupContext>(options => options.UseSqlite(dbConnectionString))
                 .AddSingleton<LineupUpdater>()
                 .AddSingleton<UdpDiscovery>();
             
-            var cfg = new RelayConfiguration();
-            _config.Bind(cfg);
 
             switch(cfg.Provider)
             {
@@ -52,10 +55,18 @@ namespace Relay.Services
         {
             app.UseMvc();
 
-            _lineupUpdater = app.ApplicationServices.GetService<LineupUpdater>();
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                using (var ctx = serviceScope.ServiceProvider.GetRequiredService<LineupContext>())
+                {
+                    ctx.Database.Migrate();
+                }
+                
+                _lineupUpdater = serviceScope.ServiceProvider.GetRequiredService<LineupUpdater>();
+                _udpDiscovery = serviceScope.ServiceProvider.GetRequiredService<UdpDiscovery>();
+            }
+            
             _lineupUpdater.Start();
-
-            _udpDiscovery = app.ApplicationServices.GetService<UdpDiscovery>();
             _udpDiscovery.Start();
         }
     }

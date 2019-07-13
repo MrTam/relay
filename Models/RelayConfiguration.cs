@@ -15,5 +15,7 @@ namespace Relay.Models
         public int TunerDeviceId { get; set; } = 1337;
 
         public uint UpdateIntervalSeconds { get; set; } = 3600;
+
+        public string DatabasePath { get; set; } = ".";
     }
 }

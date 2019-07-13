@@ -25,10 +25,9 @@ namespace Relay
                 {
                     logging
                         .ClearProviders()
-                        .SetMinimumLevel(LogLevel.Information)
+                        .SetMinimumLevel(LogLevel.Warning)
                         .AddConsole()
-                        .AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning)
-                        .AddFilter("Microsoft.AspNetCore", LogLevel.Warning)
+                        .AddFilter("Relay", LogLevel.Information)
                         .AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
                 })
                 .Build();

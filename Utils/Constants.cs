@@ -7,8 +7,6 @@ namespace Relay.Utils
 
         public const string LineupSource = "Cable";
 
-        public const string DbDataSource = "Data Source=relay.db";
-
         public const int UdpDiscoveryPort = 65001;
     }
 }
