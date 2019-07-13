@@ -23,10 +23,3 @@ jobs:
       - run:
         name: Push Docker Image
         command: docker push ${DOCKER_REPO}/relay:latest .
-
-workflows:
-  version: 2
-  workflow:
-    jobs:
-      - build:
-        context: Cloudsmith
