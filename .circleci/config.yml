@@ -18,8 +18,8 @@ jobs:
       - run:
           name: Authenticate With Cloudsmith 
           command: |
-              docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} -p ${CLOUDSMITH_API_KEY}
+              echo ${CLOUDSMITH_API_KEY} | docker login docker.cloudsmith.io -u ${CLOUDSMITH_USER} --password-stdin
 
       - run:
           name: Push Docker Image
-          command: docker push ${DOCKER_REPO}/relay:latest .
+          command: docker push ${DOCKER_REPO}/relay:latest
