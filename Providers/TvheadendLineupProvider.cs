@@ -78,6 +78,8 @@ namespace Relay.Providers
         }
 
         public LineupProvider ProviderType => LineupProvider.Tvheadend;
+        
+        public Uri InfoUri => new Uri(_config.Url);
 
         public async Task<IList<LineupEntry>> UpdateLineup()
         {

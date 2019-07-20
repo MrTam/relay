@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Options;
 using Relay.Models;
+using Relay.Providers;
+using Relay.Services;
 
 namespace Relay.Pages
 {
@@ -10,7 +13,11 @@ namespace Relay.Pages
     {
         private readonly LineupContext _context;
         
+        private readonly LineupUpdater _updater;
+        
         public RelayConfiguration Config { get; }
+        
+        public Uri LineupUri { get; }
 
         public IEnumerable<LineupEntry> Channels =>
             _context.Entries.OrderBy(e => e.Number);
@@ -25,10 +32,20 @@ namespace Relay.Pages
 
         public IndexModel(
             IOptionsSnapshot<RelayConfiguration> config,
+            ILineupProvider lineupProvider,
+            LineupUpdater lineupUpdater,
             LineupContext context)
         {
-            Config = config.Value;
             _context = context;
+            _updater = lineupUpdater;
+            
+            Config = config.Value;
+            LineupUri = lineupProvider.InfoUri;
+        }
+
+        public void OnPostReload()
+        {
+            _updater.Start();
         }
     }
 }
