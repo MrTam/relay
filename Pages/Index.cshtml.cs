@@ -6,7 +6,7 @@ using Relay.Models;
 
 namespace Relay.Pages
 {
-    public class Index : PageModel
+    public class IndexModel : PageModel
     {
         private readonly LineupContext _context;
         
@@ -23,7 +23,7 @@ namespace Relay.Pages
 
         public int ChannelCount => _context.Entries.Count();
 
-        public Index(
+        public IndexModel(
             IOptionsSnapshot<RelayConfiguration> config,
             LineupContext context)
         {
