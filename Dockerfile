@@ -1,19 +1,21 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
-
+FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine AS base
 WORKDIR /app
-COPY *.csproj ./relay/
-RUN cd relay && dotnet restore
-COPY * ./relay/
-RUN cd relay && dotnet publish -c Release -o out
-
-FROM mcr.microsoft.com/dotnet/core/aspnet:2.2-alpine AS runtime
-
-WORKDIR /app
-
 EXPOSE 80/tcp 5004/tcp 65001/udp
 
-COPY --from=build /app/relay/out/ ./
-RUN mkdir Config; ln -sf /app/Config /config
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2-alpine AS build
+WORKDIR /src
+COPY *.csproj .
+RUN dotnet restore
+COPY . .
+RUN dotnet build -c Release -o /app
+
+FROM build as publish
+RUN dotnet publish -c Release -o /app
+
+FROM base as final
+WORKDIR /app
+COPY --from=publish /app .
+RUN ln -sf /app/Config /config
 
 VOLUME /config
 ENTRYPOINT ["dotnet", "Relay.dll"]
