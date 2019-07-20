@@ -1,5 +1,6 @@
 # Relay
 [![CircleCI](https://circleci.com/gh/MrTam/relay.svg?style=svg)](https://circleci.com/gh/MrTam/relay)
+[![Cloudsmith](https://api.cloudsmith.io/badges/version/mrtam/relay/docker/relay/latest/latest/?render=true)](https://cloudsmith.io/~mrtam/repos/relay/packages)
 
 Relay is a software emulator for the Silicondust HD HomeRun series of network tuners.
 It has been designed to work out of the box with Plex DVR, and Channels DVR. Other services
