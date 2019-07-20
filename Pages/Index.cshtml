@@ -1,10 +1,82 @@
 ﻿@page
-@model IndexModel
+@model Relay.Pages.Index 
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Status";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Status</h5>
+                        <table class="table">
+                            <tbody>
+                            <tr>
+                                <th>Provider</th>
+                                <td>@Model.Config.Provider</td>
+                            </tr>
+                            <tr>
+                                <th>Refresh Interval</th>
+                                <td>@TimeSpan.FromSeconds(Model.Config.UpdateIntervalSeconds)</td>
+                            </tr>
+                            <tr>
+                                <th>Tuner Count</th>
+                                <td>@Model.Config.TunerCount</td>
+                            </tr>
+                            <tr>
+                            </tr>
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Channel Lineup</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">
+                        @Model.ChannelCount channels (HD: @Model.HdCount, Favourites: @Model.FavouritesCount)
+                    </h6>
+                    <table class="table table-striped table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col"></th>
+                            <th scope="col" class="col-8">Name</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var channel in Model.Channels)
+                        {
+                            <tr>
+                                <th scope="row">@channel.Number</th>
+                                <td>
+                                    @if (channel.Favorite == 1)
+                                    {
+                                        <i class="fas fa-heart"></i>
+                                    }
+                                    else
+                                    {
+                                        <i class="far fa-heart"></i>
+                                    }
+                                </td>
+                                <td>
+                                    @channel.Name
+                                    @if (channel.HD == 1)
+                                    {
+                                        <span class="badge badge-pill badge-dark">HD</span>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+
+
