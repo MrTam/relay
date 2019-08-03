@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -7,7 +8,6 @@ using Microsoft.Extensions.Hosting;
 using Relay.Models;
 using Relay.Providers;
 using Relay.Services.Discovery;
-using Relay.Utils;
 
 [assembly: ApiController]
 namespace Relay.Services
@@ -29,11 +29,12 @@ namespace Relay.Services
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddSpaStaticFiles(config => config.RootPath = "wwwroot/build");
             
             var cfg = new RelayConfiguration();
             _config.Bind(cfg);
 
-            var dbConnectionString = $"Data Source = Config/relay.db";
+            const string dbConnectionString = "Data Source = Config/relay.db";
             
             services
                 .Configure<RelayConfiguration>(_config)
@@ -53,7 +54,27 @@ namespace Relay.Services
         // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseMvc().UseStaticFiles();
+            app
+                .UseStaticFiles()
+                .UseSpaStaticFiles();
+
+            app.UseMvc(routes =>
+            {
+                routes.MapRoute(
+                    name: "default",
+                    template: "{controller}/{action=Index}"
+                );
+            });
+
+            app.UseSpa(spa =>
+            {
+                spa.Options.SourcePath = "wwwroot";
+
+                if(env.IsDevelopment())
+                {
+                    spa.UseReactDevelopmentServer(npmScript: "start");
+                }
+            });
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
