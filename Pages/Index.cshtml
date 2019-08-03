@@ -84,6 +84,10 @@
                                     {
                                         <span class="badge badge-pill badge-dark">HD</span>
                                     }
+                                    @if (channel.IsNew)
+                                    {
+                                        <span class="badge badge-pill badge-light">New</span>
+                                    }
                                 </td>
                             </tr>
                         }

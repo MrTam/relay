@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Relay.Migrations
 {
@@ -17,7 +18,8 @@ namespace Relay.Migrations
                     Name = table.Column<string>(nullable: true),
                     Url = table.Column<string>(nullable: true),
                     HD = table.Column<int>(nullable: false),
-                    Favorite = table.Column<int>(nullable: false)
+                    Favorite = table.Column<int>(nullable: false),
+                    CreatedTime = table.Column<DateTime>(nullable: false, defaultValueSql: "DATETIME('now')")
                 },
                 constraints: table =>
                 {

@@ -8,10 +8,11 @@ namespace Relay
 {
     internal static class Program
     {
-        public static void Main(string[] args) => BuildWebHost().Run();
+        public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public static IWebHost BuildWebHost()
+
+        public static IWebHostBuilder CreateWebHostBuilder(string[] args)
         {
             if (!Directory.Exists("Config"))
                 Directory.CreateDirectory("Config");
@@ -37,8 +38,7 @@ namespace Relay
                         .AddConsole()
                         .AddFilter("Relay", LogLevel.Information)
                         .AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
-                })
-                .Build();
+                });
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
@@ -49,16 +50,22 @@ namespace Relay.Models
         public int HD { get; set; } = 0;
 
         [JsonProperty("Favorite")]
-        public int Favorite {get; set; } = 0;
+        public int Favorite { get; set; } = 0;
+
+        [JsonIgnore]
+        public DateTime CreatedTime { get; set; }
+
+        [JsonIgnore, NotMapped]
+        public bool IsNew => DateTime.UtcNow <= CreatedTime.AddDays(7);
     }
 
     public class LineupContext : DbContext
     {
         private readonly RelayConfiguration _config;
-        
+
         public LineupContext(
-            IOptionsSnapshot<RelayConfiguration> config,
-            DbContextOptions<LineupContext> options)
+            DbContextOptions<LineupContext> options,
+            IOptionsSnapshot<RelayConfiguration> config)
             : base(options)
         {
             _config = config.Value;
@@ -66,8 +73,12 @@ namespace Relay.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<LineupEntry>().HasQueryFilter(
-                e => e.Provider == _config.Provider);
+            modelBuilder.Entity<LineupEntry>()
+                .HasQueryFilter(e => e.Provider == _config.Provider);
+
+            modelBuilder.Entity<LineupEntry>()
+                .Property(p => p.CreatedTime)
+                .HasDefaultValueSql("DATETIME('now')");
         }
 
         public DbSet<LineupEntry> Entries { get; set; }
