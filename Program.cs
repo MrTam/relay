@@ -1,4 +1,7 @@
-﻿using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -25,11 +28,21 @@ namespace Relay
                 .AddEnvironmentVariables("relay_")
                 .Build();
 
+            var ports = new List<int>{5004};
+
+            // Don't enable port 80 in dev mode, requires root on unix
+
+            var devMode = Environment
+                .GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
+                .Equals(EnvironmentName.Development);
+
+            if(!devMode) ports.Add(80);
+
             return new WebHostBuilder()
                 .UseConfiguration(config)
                 .UseKestrel()
                 .UseStartup<Server>()
-                .UseUrls("http://0.0.0.0:80", "http://0.0.0.0:5004")
+                .UseUrls(ports.Select(p => $"http://0.0.0.0:{p}").ToArray())
                 .ConfigureLogging((_, logging) =>
                 {
                     logging
