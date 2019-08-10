@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -5,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Relay.Models;
+using Relay.Services;
 
 namespace Relay.Controllers
 {
@@ -14,11 +16,35 @@ namespace Relay.Controllers
     public class LineupController : Controller
     {
         private readonly LineupContext _lineupContext;
+        private readonly LineupUpdater _lineupUpdater;
         
-        public LineupController(LineupContext context)
+        public LineupController(
+            LineupContext context,
+            LineupUpdater updater)
         {
             _lineupContext = context;
+            _lineupUpdater = updater;
         }
+
+        [HttpGet]
+        [Route("/auto/v{channel}")]
+        [Route("/stream/v{channel}")]
+        public ActionResult FetchGuideUrl(uint channel)
+        {
+            try
+            {
+                using (var ctx = _lineupContext)
+                {
+                    var entry = ctx.Entries.First(e => e.Number == channel);
+                    return new RedirectResult(entry.Url, true);
+                }
+            }
+            catch (InvalidOperationException)
+            {
+                return new NotFoundResult();
+            }
+        }
+
         
         [HttpGet]
         [Route("/lineup_status.json")]
@@ -33,6 +59,14 @@ namespace Relay.Controllers
         {
             return new ActionResult<IEnumerable<LineupEntry>>(
                 _lineupContext.Entries.OrderBy(e => e.Number));
+        }
+
+        [HttpPost]
+        [Route("/lineup.update")]
+        public ActionResult UpdateLineup()
+        {
+            _lineupUpdater.Start();
+            return Ok();
         }
 
         [HttpPost]
