@@ -33,8 +33,8 @@ namespace Relay
             // Don't enable port 80 in dev mode, requires root on unix
 
             var devMode = Environment
-                .GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")
-                .Equals(EnvironmentName.Development);
+                .GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?
+                .Equals(EnvironmentName.Development) ?? false;
 
             if(!devMode) ports.Add(80);
 
