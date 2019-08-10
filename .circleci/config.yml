@@ -2,6 +2,9 @@ version: 2
 jobs:
   build:
     working_directory: /app
+    branches:
+      only:
+        - master
 
     docker:
       - image: docker:latest
