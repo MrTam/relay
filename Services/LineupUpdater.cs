@@ -12,7 +12,7 @@ namespace Relay.Services
     public sealed class LineupUpdater
     {
         private readonly ILogger _log;
-        private readonly LineupContext _lineupContext;
+        private readonly RelayDbContext _lineupContext;
         private readonly ILineupProvider _provider;
         private readonly Timer _updateTimer;
         private bool _running;
@@ -20,7 +20,7 @@ namespace Relay.Services
         public LineupUpdater(
             ILogger<LineupUpdater> log,
             IOptionsSnapshot<RelayConfiguration> config,
-            LineupContext dbContext,
+            RelayDbContext dbContext,
             ILineupProvider provider)
         {
             _log = log;
@@ -49,7 +49,7 @@ namespace Relay.Services
 
             // Remove missing
             
-            foreach(var e in _lineupContext.Entries
+            foreach(var e in _lineupContext.LineupEntries
                 .Where(e => !lineupChannels.Contains(e.Number)))
             {
                 _log.LogInformation("Removed channel {0}: {1}", e.Number, e.Name);
@@ -59,7 +59,7 @@ namespace Relay.Services
             
             // Update existing
 
-            foreach(var e in _lineupContext.Entries
+            foreach(var e in _lineupContext.LineupEntries
                 .Where(e => lineupChannels.Contains(e.Number)))
             {
                 var other = lineupEntries.First(o => o.Number == e.Number);
@@ -76,7 +76,7 @@ namespace Relay.Services
             
             // Add new
 
-            var currentChannels = _lineupContext.Entries.Select(e => e.Number).ToList();
+            var currentChannels = _lineupContext.LineupEntries.Select(e => e.Number).ToList();
             
             foreach (var e in lineupEntries.Where(e => !currentChannels.Contains(e.Number)))
             {

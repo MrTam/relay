@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Relay.Providers;
@@ -57,30 +55,5 @@ namespace Relay.Models
 
         [JsonIgnore, NotMapped]
         public bool IsNew => DateTime.UtcNow <= CreatedTime.AddDays(7);
-    }
-
-    public class LineupContext : DbContext
-    {
-        private readonly RelayConfiguration _config;
-
-        public LineupContext(
-            DbContextOptions<LineupContext> options,
-            IOptionsSnapshot<RelayConfiguration> config)
-            : base(options)
-        {
-            _config = config.Value;
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<LineupEntry>()
-                .HasQueryFilter(e => e.Provider == _config.Provider);
-
-            modelBuilder.Entity<LineupEntry>()
-                .Property(p => p.CreatedTime)
-                .HasDefaultValueSql("DATETIME('now')");
-        }
-
-        public DbSet<LineupEntry> Entries { get; set; }
     }
 }

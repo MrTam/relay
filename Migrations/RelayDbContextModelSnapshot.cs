@@ -7,8 +7,8 @@ using Relay.Models;
 
 namespace Relay.Migrations
 {
-    [DbContext(typeof(LineupContext))]
-    partial class LineupContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(RelayDbContext))]
+    partial class RelayDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -39,7 +39,25 @@ namespace Relay.Migrations
 
                     b.HasKey("LineupEntryId");
 
-                    b.ToTable("Entries");
+                    b.ToTable("LineupEntries");
+                });
+
+            modelBuilder.Entity("Relay.Models.LogEntry", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Level");
+
+                    b.Property<string>("Logger");
+
+                    b.Property<string>("Message");
+
+                    b.Property<string>("Timestamp");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("LogEntries");
                 });
 #pragma warning restore 612, 618
         }

@@ -38,7 +38,7 @@ namespace Relay.Services
             
             services
                 .Configure<RelayConfiguration>(_config)
-                .AddDbContext<LineupContext>(options => options.UseSqlite(dbConnectionString))
+                .AddDbContext<RelayDbContext>(options => options.UseSqlite(dbConnectionString))
                 .AddSingleton<LineupUpdater>()
                 .AddSingleton<UdpDiscovery>();
             
@@ -78,7 +78,7 @@ namespace Relay.Services
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {
-                using (var ctx = serviceScope.ServiceProvider.GetRequiredService<LineupContext>())
+                using (var ctx = serviceScope.ServiceProvider.GetRequiredService<RelayDbContext>())
                 {
                     ctx.Database.Migrate();
                 }

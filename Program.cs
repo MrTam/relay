@@ -5,13 +5,32 @@ using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using NLog.Web;
 using Relay.Services;
 
 namespace Relay
 {
     internal static class Program
     {
-        public static void Main(string[] args) => CreateWebHostBuilder(args).Build().Run();
+        public static void Main(string[] args)
+        {
+            var logger = NLog.Web.NLogBuilder
+                .ConfigureNLog("nlog.config")
+                .GetCurrentClassLogger();
+
+            try
+            {
+                CreateWebHostBuilder(args).Build().Run();
+            }
+            catch(Exception e)
+            {
+                logger.Error("Program stopped due to exception: {0}", e.Message);
+            }
+            finally
+            {
+                NLog.LogManager.Shutdown();
+            }
+        }
 
         // ReSharper disable once MemberCanBePrivate.Global
 
@@ -45,13 +64,9 @@ namespace Relay
                 .UseUrls(ports.Select(p => $"http://0.0.0.0:{p}").ToArray())
                 .ConfigureLogging((_, logging) =>
                 {
-                    logging
-                        .ClearProviders()
-                        .SetMinimumLevel(LogLevel.Warning)
-                        .AddConsole()
-                        .AddFilter("Relay", LogLevel.Information)
-                        .AddFilter("Microsoft.AspNetCore.Hosting", LogLevel.Information);
-                });
+                    logging.ClearProviders().SetMinimumLevel(LogLevel.Information);
+                })
+                .UseNLog();
         }
     }
 }

@@ -15,11 +15,11 @@ namespace Relay.Controllers
     [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
     public class LineupController : Controller
     {
-        private readonly LineupContext _lineupContext;
+        private readonly RelayDbContext _lineupContext;
         private readonly LineupUpdater _lineupUpdater;
         
         public LineupController(
-            LineupContext context,
+            RelayDbContext context,
             LineupUpdater updater)
         {
             _lineupContext = context;
@@ -35,7 +35,7 @@ namespace Relay.Controllers
             {
                 using (var ctx = _lineupContext)
                 {
-                    var entry = ctx.Entries.First(e => e.Number == channel);
+                    var entry = ctx.LineupEntries.First(e => e.Number == channel);
                     return new RedirectResult(entry.Url, true);
                 }
             }
@@ -58,7 +58,7 @@ namespace Relay.Controllers
         public ActionResult<IEnumerable<LineupEntry>> GetLineup()
         {
             return new ActionResult<IEnumerable<LineupEntry>>(
-                _lineupContext.Entries.OrderBy(e => e.Number));
+                _lineupContext.LineupEntries.OrderBy(e => e.Number));
         }
 
         [HttpPost]
@@ -85,7 +85,7 @@ namespace Relay.Controllers
             
             using (var ctx = _lineupContext)
             {
-                var entry = await ctx.Entries.FirstAsync(e => e.Number == channel);
+                var entry = await ctx.LineupEntries.FirstAsync(e => e.Number == channel);
                 entry.Favorite = favourite[0] == '-' ? 0 : 1;
                 
                 await ctx.SaveChangesAsync();

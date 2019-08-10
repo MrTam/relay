@@ -8,7 +8,7 @@ namespace Relay.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Entries",
+                name: "LineupEntries",
                 columns: table => new
                 {
                     LineupEntryId = table.Column<int>(nullable: false)
@@ -23,14 +23,33 @@ namespace Relay.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Entries", x => x.LineupEntryId);
+                    table.PrimaryKey("PK_LineupEntries", x => x.LineupEntryId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "LogEntries",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Level = table.Column<string>(nullable: true),
+                    Logger = table.Column<string>(nullable: true),
+                    Message = table.Column<string>(nullable: true),
+                    Timestamp = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_LogEntries", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Entries");
+                name: "LineupEntries");
+
+            migrationBuilder.DropTable(
+                name: "LogEntries");
         }
     }
 }
