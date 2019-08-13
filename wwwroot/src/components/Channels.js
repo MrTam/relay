@@ -6,7 +6,7 @@ import { faHeart as heartSolid } from '@fortawesome/free-solid-svg-icons'
 import { faHeart as heartRegular } from '@fortawesome/free-regular-svg-icons'
 
 import { Card, CardBody, CardTitle,
-    CardSubtitle, CardText, Table } from 'reactstrap';
+    CardSubtitle, Table } from 'reactstrap';
 
 import './Channels.css'
 
@@ -49,33 +49,31 @@ export class Channels extends Component {
                     <CardBody>
                         <CardTitle>Channel Lineup</CardTitle>
                         <CardSubtitle>{channels.length} Channels (HD: {hdChannelCount}, Favourites: {favCount})</CardSubtitle>
-                        <CardText>
-                            <Table striped hover borderless>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">#</th>
-                                        <th scope="col" />
-                                        <th scope="col" className="col-8">Name</th>
+                        <Table striped hover borderless>
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col" />
+                                    <th scope="col" className="col-8">Name</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {channels.map(channel =>
+                                    <tr key={channel.GuideNumber}>
+                                        <th scope="row">{channel.GuideNumber}</th>
+                                        <td>
+                                            <span id="heart-icon" onClick={e => this.toggleFavourite(channel.GuideNumber, channel.Favorite)}>
+                                                <FontAwesomeIcon icon={channel.Favorite ? heartSolid : heartRegular}/>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {channel.GuideName} 
+                                            {channel.HD ? <span className="badge badge-pill badge-dark">HD</span>: ""}
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    {channels.map(channel =>
-                                        <tr>
-                                            <th scope="row">{channel.GuideNumber}</th>
-                                            <td>
-                                                <span id="heart-icon" onClick={e => this.toggleFavourite(channel.GuideNumber, channel.Favorite)}>
-                                                    <FontAwesomeIcon icon={channel.Favorite ? heartSolid : heartRegular}/>
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {channel.GuideName} 
-                                                {channel.HD ? <span className="badge badge-pill badge-dark">HD</span>: ""}
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </Table>
-                        </CardText>
+                                )}
+                            </tbody>
+                        </Table>
                     </CardBody>
                 </Card>
             </div>

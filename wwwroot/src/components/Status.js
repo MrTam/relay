@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Button, Card, CardBody, CardTitle, CardText, Table } from 'reactstrap';
+import { Button, Card, CardBody, CardTitle, Table } from 'reactstrap';
 
 export class Status extends Component {
     constructor(props) {
@@ -28,7 +28,6 @@ export class Status extends Component {
                 <Card>
                     <CardBody>
                         <CardTitle>Status</CardTitle>
-                        <CardText>
                             <Table striped>
                                 <tbody>
                                     <tr>
@@ -46,7 +45,6 @@ export class Status extends Component {
                                 </tbody>
                             </Table>
                             <Button onClick={this.onRefresh}>Update Guide</Button>
-                        </CardText>
                     </CardBody>
                 </Card>
             </div>
